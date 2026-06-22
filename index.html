@@ -1,1218 +1,1018 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OurUFO — Unified Future Organization</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
-    /* ─── Reset & Base ─── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
+
+    :root {
+      --ink: #0a0a0f;
+      --ink-2: #3d3d4d;
+      --ink-3: #8888a0;
+      --ink-4: #b0b0c4;
+      --surface: #ffffff;
+      --surface-2: #f6f6f9;
+      --surface-3: #f0f0f5;
+      --border: #e4e4ec;
+      --accent: #5b4fff;
+      --accent-light: rgba(91,79,255,.08);
+      --accent-mid: rgba(91,79,255,.18);
+      --teal: #00bcd4;
+      --rose: #f4436c;
+    }
+
     body {
       font-family: 'Inter', sans-serif;
-      background: #060814;
-      color: #e0e6ff;
+      background: var(--surface);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
 
-    /* ─── CSS Variables ─── */
-    :root {
-      --primary: #6c63ff;
-      --secondary: #00d4ff;
-      --accent: #ff6b9d;
-      --bg: #060814;
-      --bg-card: #0d1224;
-      --bg-card2: #111830;
-      --text: #e0e6ff;
-      --text-muted: #7a8ab8;
-      --border: rgba(108,99,255,0.25);
-      --glow: 0 0 40px rgba(108,99,255,0.35);
-    }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--surface-2); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-    /* ─── Scrollbar ─── */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
-
-    /* ─── NAV ─── */
+    /* ── NAV ── */
     nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 62px;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 6vw;
-      height: 68px;
-      background: rgba(6,8,20,0.82);
-      backdrop-filter: blur(20px);
+      padding: 0 5vw;
+      background: rgba(255,255,255,.88);
+      backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
-      transition: background .3s;
+      transition: box-shadow .3s;
     }
+    nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,.06); }
     .nav-logo {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.45rem; font-weight: 700;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      letter-spacing: -0.5px;
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.4rem; font-weight: 400; color: var(--ink);
+      letter-spacing: -.3px; text-decoration: none;
     }
+    .nav-logo span { color: var(--accent); }
     .nav-links { display: flex; gap: 2rem; list-style: none; }
     .nav-links a {
-      color: var(--text-muted); text-decoration: none;
-      font-size: .88rem; font-weight: 500; letter-spacing: .4px;
-      transition: color .2s;
+      font-size: .85rem; font-weight: 500; color: var(--ink-2);
+      text-decoration: none; transition: color .2s;
     }
-    .nav-links a:hover { color: var(--secondary); }
-    .nav-cta {
-      padding: .5rem 1.3rem;
-      background: linear-gradient(135deg, var(--primary), #9b5de5);
-      color: #fff; border: none; border-radius: 8px;
-      font-family: 'Inter', sans-serif; font-size: .85rem; font-weight: 600;
-      cursor: pointer; text-decoration: none;
-      box-shadow: 0 0 20px rgba(108,99,255,.5);
-      transition: transform .2s, box-shadow .2s;
+    .nav-links a:hover { color: var(--accent); }
+    .nav-right { display: flex; align-items: center; gap: 1rem; }
+    .nav-btn {
+      padding: .5rem 1.2rem;
+      background: var(--ink); color: #fff;
+      border: none; border-radius: 8px; font-size: .83rem; font-weight: 500;
+      cursor: pointer; text-decoration: none; letter-spacing: .1px;
+      transition: background .2s, transform .15s;
     }
-    .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(108,99,255,.7); }
+    .nav-btn:hover { background: var(--accent); transform: translateY(-1px); }
 
-    /* Hamburger */
-    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
-    .hamburger span { display: block; width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: .3s; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { display: block; width: 22px; height: 1.5px; background: var(--ink); border-radius: 2px; transition: .3s; }
     .mobile-menu {
-      display: none; position: fixed; top: 68px; left: 0; right: 0;
-      background: rgba(6,8,20,.96); backdrop-filter: blur(20px);
-      padding: 2rem; z-index: 999; border-bottom: 1px solid var(--border);
+      display: none; position: fixed; top: 62px; left: 0; right: 0;
+      background: rgba(255,255,255,.98); backdrop-filter: blur(16px);
+      padding: 1.5rem 5vw; z-index: 99;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 8px 30px rgba(0,0,0,.08);
     }
     .mobile-menu.open { display: block; }
-    .mobile-menu ul { list-style: none; display: flex; flex-direction: column; gap: 1.5rem; }
-    .mobile-menu a { color: var(--text); text-decoration: none; font-size: 1.1rem; }
+    .mobile-menu ul { list-style: none; display: flex; flex-direction: column; gap: 1.2rem; }
+    .mobile-menu a { font-size: 1rem; color: var(--ink); text-decoration: none; font-weight: 500; }
 
-    /* ─── HERO ─── */
+    /* ── HERO ── */
     #hero {
       min-height: 100vh;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      text-align: center;
-      padding: 100px 6vw 60px;
+      text-align: center; padding: 120px 6vw 80px;
       position: relative; overflow: hidden;
     }
-    /* Animated gradient background */
-    #hero::before {
-      content: '';
-      position: absolute; inset: 0;
-      background:
-        radial-gradient(ellipse 70% 50% at 50% -10%, rgba(108,99,255,.45) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 90% 60%, rgba(0,212,255,.2) 0%, transparent 55%),
-        radial-gradient(ellipse 40% 30% at 10% 70%, rgba(255,107,157,.15) 0%, transparent 50%);
-      animation: gradientShift 8s ease-in-out infinite alternate;
-    }
-    @keyframes gradientShift {
-      0%   { opacity: .8; transform: scale(1); }
-      100% { opacity: 1;  transform: scale(1.05); }
-    }
-    /* Grid lines */
-    #hero::after {
-      content: '';
-      position: absolute; inset: 0;
-      background-image:
-        linear-gradient(rgba(108,99,255,.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(108,99,255,.06) 1px, transparent 1px);
-      background-size: 60px 60px;
-      mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
-    }
-
-    /* Floating orbs */
-    .orb {
+    /* Soft gradient blobs */
+    .blob {
       position: absolute; border-radius: 50%;
-      filter: blur(60px); pointer-events: none; animation: float 10s ease-in-out infinite;
+      filter: blur(80px); pointer-events: none; opacity: .55;
+      animation: drift 14s ease-in-out infinite alternate;
     }
-    .orb-1 { width: 300px; height: 300px; background: rgba(108,99,255,.18); top: 10%; left: 5%; animation-delay: 0s; }
-    .orb-2 { width: 250px; height: 250px; background: rgba(0,212,255,.12); bottom: 15%; right: 8%; animation-delay: -4s; }
-    .orb-3 { width: 180px; height: 180px; background: rgba(255,107,157,.1); top: 60%; left: 20%; animation-delay: -7s; }
-    @keyframes float {
-      0%, 100% { transform: translateY(0) scale(1); }
-      50%       { transform: translateY(-30px) scale(1.05); }
+    .blob-1 { width: 500px; height: 500px; background: rgba(91,79,255,.12); top: -100px; left: -80px; animation-duration: 18s; }
+    .blob-2 { width: 400px; height: 400px; background: rgba(0,188,212,.1); bottom: -60px; right: -60px; animation-duration: 14s; animation-delay: -5s; }
+    .blob-3 { width: 300px; height: 300px; background: rgba(244,67,108,.07); top: 40%; left: 30%; animation-duration: 20s; animation-delay: -10s; }
+    @keyframes drift {
+      0%   { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, -20px) scale(1.06); }
     }
 
     .hero-badge {
       display: inline-flex; align-items: center; gap: .5rem;
-      padding: .4rem 1.1rem;
-      background: rgba(108,99,255,.15); border: 1px solid rgba(108,99,255,.4);
-      border-radius: 100px; font-size: .78rem; font-weight: 500; letter-spacing: .8px;
-      color: var(--secondary); text-transform: uppercase; margin-bottom: 1.8rem;
-      position: relative; z-index: 1;
+      padding: .35rem 1rem;
+      background: var(--accent-light); border: 1px solid var(--accent-mid);
+      border-radius: 100px; font-size: .75rem; font-weight: 600;
+      color: var(--accent); letter-spacing: .5px; text-transform: uppercase;
+      margin-bottom: 2rem; position: relative; z-index: 1;
     }
-    .hero-badge::before {
-      content: ''; width: 7px; height: 7px; border-radius: 50%;
-      background: var(--secondary); animation: pulse 1.5s infinite;
-    }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: blink 1.6s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
 
     .hero-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2.8rem, 7vw, 6rem);
-      font-weight: 700; line-height: 1.05; letter-spacing: -2px;
-      position: relative; z-index: 1; margin-bottom: 1rem;
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(3rem, 7.5vw, 6.5rem);
+      font-weight: 400; line-height: 1.07; letter-spacing: -2px;
+      color: var(--ink); position: relative; z-index: 1;
+      margin-bottom: 1.4rem;
     }
-    .hero-title .grad {
-      background: linear-gradient(135deg, #fff 30%, var(--secondary) 60%, var(--primary) 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
+    .hero-title em { font-style: italic; color: var(--accent); }
     .hero-sub {
-      font-size: clamp(1rem, 2.2vw, 1.25rem);
-      color: var(--text-muted); max-width: 620px; line-height: 1.75;
-      position: relative; z-index: 1; margin-bottom: 2.5rem;
+      font-size: clamp(.95rem, 1.8vw, 1.15rem);
+      color: var(--ink-2); max-width: 580px; line-height: 1.8;
+      position: relative; z-index: 1; margin-bottom: 2.8rem;
     }
-    .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; position: relative; z-index: 1; }
-    .btn-primary {
-      padding: .85rem 2.2rem;
-      background: linear-gradient(135deg, var(--primary), #9b5de5);
-      color: #fff; border: none; border-radius: 10px;
-      font-family: 'Inter', sans-serif; font-size: .95rem; font-weight: 600;
-      cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: .5rem;
-      box-shadow: 0 0 30px rgba(108,99,255,.5);
-      transition: transform .2s, box-shadow .2s;
+    .hero-ctas {
+      display: flex; gap: .8rem; flex-wrap: wrap; justify-content: center;
+      position: relative; z-index: 1; margin-bottom: 4rem;
     }
-    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 0 50px rgba(108,99,255,.7); }
-    .btn-ghost {
-      padding: .85rem 2.2rem;
-      background: transparent; color: var(--text);
-      border: 1px solid rgba(255,255,255,.2); border-radius: 10px;
-      font-size: .95rem; font-weight: 500; cursor: pointer; text-decoration: none;
-      display: inline-flex; align-items: center; gap: .5rem;
-      transition: border-color .2s, background .2s;
-    }
-    .btn-ghost:hover { border-color: var(--secondary); background: rgba(0,212,255,.05); }
-
-    .hero-stats {
-      display: flex; gap: 4rem; margin-top: 5rem;
-      position: relative; z-index: 1;
-      padding: 1.5rem 3rem;
-      background: rgba(255,255,255,.03); border: 1px solid var(--border);
-      border-radius: 16px; backdrop-filter: blur(10px);
-    }
-    .stat-item { text-align: center; }
-    .stat-num {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 2rem; font-weight: 700;
-      background: linear-gradient(135deg, var(--secondary), var(--primary));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .stat-label { font-size: .78rem; color: var(--text-muted); margin-top: .2rem; letter-spacing: .5px; }
-
-    /* ─── Section Shared ─── */
-    section { padding: 100px 6vw; }
-    .section-label {
-      display: inline-block;
-      font-size: .75rem; font-weight: 600; letter-spacing: 2px;
-      text-transform: uppercase; color: var(--primary);
-      margin-bottom: .8rem;
-    }
-    .section-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 700; letter-spacing: -1px;
-      line-height: 1.15; margin-bottom: 1.2rem;
-    }
-    .section-desc {
-      color: var(--text-muted); font-size: 1rem; line-height: 1.8; max-width: 560px;
-    }
-
-    /* Fade-in animation */
-    .fade-in { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s ease; }
-    .fade-in.visible { opacity: 1; transform: translateY(0); }
-
-    /* ─── ABOUT ─── */
-    #about {
-      background: linear-gradient(180deg, var(--bg) 0%, rgba(13,18,36,.6) 100%);
-    }
-    .about-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; margin-top: 4rem;
-    }
-    .about-visual {
-      position: relative; aspect-ratio: 1;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .about-ring {
-      position: absolute; border-radius: 50%; border: 1px solid;
-      animation: spin linear infinite;
-    }
-    .ring-1 { width: 380px; height: 380px; border-color: rgba(108,99,255,.25); animation-duration: 25s; }
-    .ring-2 { width: 280px; height: 280px; border-color: rgba(0,212,255,.2); animation-duration: 18s; animation-direction: reverse; }
-    .ring-3 { width: 180px; height: 180px; border-color: rgba(255,107,157,.15); animation-duration: 12s; }
-    @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-    .ring-dot {
-      position: absolute; width: 10px; height: 10px; border-radius: 50%;
-      top: -5px; left: 50%; transform: translateX(-50%);
-    }
-    .ring-1 .ring-dot { background: var(--primary); box-shadow: 0 0 12px var(--primary); }
-    .ring-2 .ring-dot { background: var(--secondary); box-shadow: 0 0 12px var(--secondary); }
-    .ring-3 .ring-dot { background: var(--accent); box-shadow: 0 0 12px var(--accent); }
-    .about-center-icon {
-      width: 90px; height: 90px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2.5rem; box-shadow: 0 0 50px rgba(108,99,255,.5);
-      z-index: 1;
-    }
-    .about-points { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem; }
-    .about-point {
-      display: flex; gap: 1rem; align-items: flex-start;
-      padding: 1.2rem; background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 12px; transition: border-color .3s, transform .3s;
-    }
-    .about-point:hover { border-color: var(--primary); transform: translateX(5px); }
-    .point-icon {
-      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
-    }
-    .about-point-text h4 { font-family: 'Space Grotesk', sans-serif; font-size: .95rem; margin-bottom: .3rem; }
-    .about-point-text p { font-size: .84rem; color: var(--text-muted); line-height: 1.6; }
-
-    /* ─── PRODUCT ─── */
-    #product { background: var(--bg); }
-    .product-header { text-align: center; max-width: 640px; margin: 0 auto 4rem; }
-    .product-header .section-desc { margin: 0 auto; }
-
-    /* Main product showcase */
-    .product-showcase {
-      display: grid; grid-template-columns: 1fr 1.2fr; gap: 4rem; align-items: start; margin-bottom: 5rem;
-    }
-    .product-screen {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 20px; overflow: hidden;
-      box-shadow: 0 30px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(108,99,255,.1);
-    }
-    .screen-bar {
-      background: var(--bg-card2); padding: .8rem 1.2rem;
-      display: flex; align-items: center; gap: .5rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .dot { width: 12px; height: 12px; border-radius: 50%; }
-    .dot-r{background:#ff5f57} .dot-y{background:#febc2e} .dot-g{background:#28c840}
-    .screen-url {
-      flex: 1; margin-left: .5rem;
-      background: rgba(255,255,255,.05); border-radius: 6px;
-      padding: .3rem .8rem; font-size: .72rem; color: var(--text-muted);
-    }
-    .screen-body { padding: 1.5rem; min-height: 320px; }
-    .mini-dash {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;
-    }
-    .mini-card {
-      background: rgba(108,99,255,.08); border: 1px solid rgba(108,99,255,.2);
-      border-radius: 10px; padding: 1rem;
-    }
-    .mini-card-label { font-size: .68rem; color: var(--text-muted); margin-bottom: .4rem; }
-    .mini-card-val {
-      font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; font-weight: 700;
-      background: linear-gradient(135deg, var(--secondary), var(--primary));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .mini-bar { background: rgba(255,255,255,.04); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
-    .mini-bar-label { font-size: .72rem; color: var(--text-muted); margin-bottom: .6rem; }
-    .bar-row { display: flex; align-items: center; gap: .7rem; margin-bottom: .5rem; }
-    .bar-name { font-size: .68rem; color: var(--text-muted); width: 60px; flex-shrink: 0; }
-    .bar-track { flex: 1; height: 6px; background: rgba(255,255,255,.06); border-radius: 3px; overflow: hidden; }
-    .bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--primary), var(--secondary)); }
-
-    .feature-list { display: flex; flex-direction: column; gap: 1.2rem; }
-    .feature-item {
-      display: flex; gap: 1rem; align-items: flex-start;
-      padding: 1.4rem; background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 14px; transition: border-color .3s, box-shadow .3s;
-      cursor: default;
-    }
-    .feature-item:hover { border-color: var(--primary); box-shadow: var(--glow); }
-    .feature-num {
-      font-family: 'Space Grotesk', sans-serif; font-size: .75rem; font-weight: 700;
-      color: var(--primary); width: 30px; padding-top: 3px;
-    }
-    .feature-content h4 { font-family: 'Space Grotesk', sans-serif; font-size: .95rem; margin-bottom: .3rem; }
-    .feature-content p { font-size: .83rem; color: var(--text-muted); line-height: 1.65; }
-
-    /* Feature grid bottom */
-    .feature-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 2rem;
-    }
-    .feat-card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 16px; padding: 2rem 1.5rem; text-align: center;
-      transition: transform .3s, border-color .3s;
-    }
-    .feat-card:hover { transform: translateY(-6px); border-color: var(--primary); }
-    .feat-icon {
-      font-size: 2rem; margin-bottom: 1rem;
-      width: 56px; height: 56px; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;
-    }
-    .feat-card h4 { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; margin-bottom: .5rem; }
-    .feat-card p { font-size: .82rem; color: var(--text-muted); line-height: 1.65; }
-
-    /* ─── FUNDING ─── */
-    #funding {
-      background: linear-gradient(180deg, var(--bg) 0%, rgba(13,18,36,.8) 100%);
-    }
-    .funding-header { text-align: center; max-width: 600px; margin: 0 auto 4rem; }
-    .funding-header .section-desc { margin: 0 auto; }
-
-    .funding-total {
-      text-align: center; margin-bottom: 4rem;
-      padding: 3rem; background: var(--bg-card);
-      border: 1px solid rgba(108,99,255,.3); border-radius: 24px;
-      max-width: 500px; margin: 0 auto 4rem;
-      box-shadow: 0 0 60px rgba(108,99,255,.15);
-    }
-    .funding-total-label { font-size: .8rem; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: .8rem; }
-    .funding-total-num {
-      font-family: 'Space Grotesk', sans-serif; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700;
-      background: linear-gradient(135deg, #fff, var(--secondary));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .funding-total-sub { font-size: .88rem; color: var(--text-muted); margin-top: .5rem; }
-
-    .rounds-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 4rem; }
-    .round-card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 20px; padding: 2.5rem 2rem; position: relative; overflow: hidden;
-      transition: transform .3s, border-color .3s;
-    }
-    .round-card:hover { transform: translateY(-8px); border-color: var(--primary); }
-    .round-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-    }
-    .round-tag {
-      display: inline-block; padding: .3rem .9rem;
-      background: rgba(108,99,255,.15); border: 1px solid rgba(108,99,255,.3);
-      border-radius: 100px; font-size: .72rem; font-weight: 600;
-      color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.2rem;
-    }
-    .round-amount {
-      font-family: 'Space Grotesk', sans-serif; font-size: 2rem; font-weight: 700;
-      color: #fff; margin-bottom: .4rem;
-    }
-    .round-date { font-size: .8rem; color: var(--text-muted); margin-bottom: 1.5rem; }
-    .round-investors h5 { font-size: .75rem; color: var(--text-muted); letter-spacing: .8px; text-transform: uppercase; margin-bottom: .8rem; }
-    .investor-chip {
-      display: inline-flex; align-items: center; gap: .4rem;
-      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
-      border-radius: 8px; padding: .35rem .7rem; font-size: .78rem; margin: .25rem .25rem .25rem 0;
-    }
-    .investor-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--secondary); }
-    .round-use { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
-    .round-use h5 { font-size: .75rem; color: var(--text-muted); letter-spacing: .8px; text-transform: uppercase; margin-bottom: .6rem; }
-    .round-use p { font-size: .83rem; color: var(--text-muted); line-height: 1.6; }
-
-    .investors-logos {
-      margin-top: 4rem; text-align: center;
-    }
-    .investors-logos h3 { font-size: .8rem; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 2rem; }
-    .logo-row { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; }
-    .logo-pill {
+    .btn-fill {
       padding: .8rem 2rem;
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 12px; font-family: 'Space Grotesk', sans-serif;
-      font-size: .9rem; font-weight: 600; color: var(--text-muted);
-      transition: border-color .3s, color .3s;
+      background: var(--ink); color: #fff;
+      border: none; border-radius: 10px;
+      font-size: .9rem; font-weight: 500; cursor: pointer; text-decoration: none;
+      transition: background .2s, transform .15s, box-shadow .2s;
     }
-    .logo-pill:hover { border-color: var(--primary); color: var(--text); }
+    .btn-fill:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(91,79,255,.3); }
+    .btn-outline {
+      padding: .8rem 2rem;
+      background: transparent; color: var(--ink);
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: .9rem; font-weight: 500; cursor: pointer; text-decoration: none;
+      transition: border-color .2s, color .2s, transform .15s;
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
 
-    /* ─── TEAM ─── */
-    #team { background: var(--bg); }
-    .team-header { text-align: center; max-width: 600px; margin: 0 auto 4rem; }
-    .team-header .section-desc { margin: 0 auto; }
+    .hero-metrics {
+      display: flex; gap: 3rem;
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--border);
+      padding-top: 2.5rem;
+    }
+    .metric { text-align: left; }
+    .metric-num {
+      font-family: 'Instrument Serif', serif;
+      font-size: 2.2rem; font-weight: 400; color: var(--ink); line-height: 1;
+    }
+    .metric-label { font-size: .75rem; color: var(--ink-3); margin-top: .3rem; letter-spacing: .3px; }
 
-    .team-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;
+    /* ── SHARED SECTION ── */
+    section { padding: 100px 6vw; }
+    .section-eyebrow {
+      font-size: .72rem; font-weight: 600; letter-spacing: 1.8px;
+      text-transform: uppercase; color: var(--accent); margin-bottom: .7rem;
+    }
+    .section-h {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400; line-height: 1.18; letter-spacing: -.8px;
+      margin-bottom: 1.1rem; color: var(--ink);
+    }
+    .section-p { font-size: .95rem; color: var(--ink-2); line-height: 1.8; max-width: 520px; }
+
+    .fade-up { opacity: 0; transform: translateY(24px); transition: opacity .65s ease, transform .65s ease; }
+    .fade-up.in { opacity: 1; transform: translateY(0); }
+
+    /* ── ABOUT ── */
+    #about { background: var(--surface-2); }
+    .about-layout {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; margin-top: 3rem;
+    }
+    .about-cards { display: flex; flex-direction: column; gap: 1rem; }
+    .about-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.4rem 1.6rem;
+      display: flex; gap: 1rem; align-items: flex-start;
+      transition: border-color .25s, box-shadow .25s;
+    }
+    .about-card:hover { border-color: var(--accent); box-shadow: 0 4px 20px rgba(91,79,255,.08); }
+    .ac-icon {
+      width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+    }
+    .about-card h4 { font-size: .9rem; font-weight: 600; margin-bottom: .3rem; color: var(--ink); }
+    .about-card p { font-size: .82rem; color: var(--ink-2); line-height: 1.65; }
+
+    /* Visual side */
+    .about-visual-side { position: relative; }
+    .av-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 2rem;
+      box-shadow: 0 8px 40px rgba(0,0,0,.06);
+    }
+    .av-top { display: flex; align-items: center; gap: .75rem; margin-bottom: 1.5rem; }
+    .av-logo-sm {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), #9b5de5);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 1rem;
+    }
+    .av-top-text h5 { font-size: .85rem; font-weight: 600; color: var(--ink); }
+    .av-top-text p { font-size: .72rem; color: var(--ink-3); }
+    .av-stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-bottom: 1rem; }
+    .av-stat {
+      background: var(--surface-2); border-radius: 10px; padding: .8rem 1rem;
+    }
+    .av-stat-l { font-size: .68rem; color: var(--ink-3); margin-bottom: .2rem; }
+    .av-stat-v { font-family: 'Instrument Serif', serif; font-size: 1.4rem; color: var(--ink); }
+    .av-progress-label { font-size: .72rem; color: var(--ink-3); margin-bottom: .5rem; }
+    .av-prog-row { display: flex; align-items: center; gap: .6rem; margin-bottom: .4rem; }
+    .av-prog-name { font-size: .7rem; color: var(--ink-2); width: 70px; }
+    .av-prog-track { flex: 1; height: 5px; background: var(--surface-3); border-radius: 3px; overflow: hidden; }
+    .av-prog-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--teal)); }
+    .av-tags { display: flex; gap: .4rem; flex-wrap: wrap; margin-top: 1rem; }
+    .av-tag {
+      font-size: .68rem; padding: .25rem .6rem;
+      background: var(--accent-light); border: 1px solid var(--accent-mid);
+      border-radius: 6px; color: var(--accent);
+    }
+
+    .av-float {
+      position: absolute; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: .8rem 1rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,.1);
+    }
+    .av-float-1 { top: -20px; right: -20px; }
+    .av-float-2 { bottom: -20px; left: -20px; }
+    .av-float-label { font-size: .65rem; color: var(--ink-3); margin-bottom: .15rem; }
+    .av-float-val { font-size: .85rem; font-weight: 600; color: var(--ink); }
+
+    /* ── PRODUCT ── */
+    #product { background: var(--surface); }
+    .product-head { text-align: center; max-width: 600px; margin: 0 auto 4rem; }
+    .product-head .section-p { margin: 0 auto; }
+
+    .product-tabs { display: flex; gap: .5rem; justify-content: center; margin-bottom: 3rem; flex-wrap: wrap; }
+    .tab-btn {
+      padding: .5rem 1.2rem;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 8px; font-size: .82rem; font-weight: 500; color: var(--ink-2);
+      cursor: pointer; transition: .2s;
+    }
+    .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .tab-btn:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 4rem; }
+    .feat {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 16px; padding: 2rem 1.6rem;
+      transition: border-color .25s, transform .25s, box-shadow .25s;
+    }
+    .feat:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(91,79,255,.1); }
+    .feat-icon-box {
+      width: 48px; height: 48px; border-radius: 12px; margin-bottom: 1.2rem;
+      display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+    }
+    .feat h4 { font-size: .95rem; font-weight: 600; margin-bottom: .5rem; color: var(--ink); }
+    .feat p { font-size: .82rem; color: var(--ink-2); line-height: 1.7; }
+
+    /* Specs strip */
+    .specs-strip {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+      background: var(--border); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+    }
+    .spec {
+      background: var(--surface-2); padding: 2rem 1.5rem; text-align: center;
+    }
+    .spec-val {
+      font-family: 'Instrument Serif', serif;
+      font-size: 2rem; color: var(--accent); margin-bottom: .3rem;
+    }
+    .spec-label { font-size: .78rem; color: var(--ink-3); }
+
+    /* ── FUNDING ── */
+    #funding { background: var(--surface-2); }
+    .funding-head { max-width: 560px; margin-bottom: 3.5rem; }
+
+    .total-bar {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 2rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem;
       margin-bottom: 3rem;
     }
-    .team-card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 20px; padding: 2rem 1.5rem; text-align: center;
-      transition: transform .3s, border-color .3s, box-shadow .3s;
+    .total-left h3 { font-size: .72rem; color: var(--ink-3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: .4rem; }
+    .total-amount { font-family: 'Instrument Serif', serif; font-size: 2.8rem; color: var(--ink); letter-spacing: -1px; }
+    .total-right { display: flex; gap: 2.5rem; }
+    .total-stat h4 { font-family: 'Instrument Serif', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: .2rem; }
+    .total-stat p { font-size: .75rem; color: var(--ink-3); }
+
+    .rounds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .round {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 16px; padding: 2rem; overflow: hidden; position: relative;
+      transition: border-color .25s, transform .25s;
     }
-    .team-card:hover { transform: translateY(-8px); border-color: var(--primary); box-shadow: var(--glow); }
-    .team-avatar {
-      width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 1.2rem;
+    .round:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .round-stripe {
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+    .r-tag {
+      display: inline-block; padding: .25rem .75rem;
+      border-radius: 6px; font-size: .7rem; font-weight: 600;
+      letter-spacing: .5px; text-transform: uppercase; margin-bottom: 1.2rem; margin-top: .4rem;
+    }
+    .r-amount { font-family: 'Instrument Serif', serif; font-size: 2rem; color: var(--ink); margin-bottom: .25rem; }
+    .r-date { font-size: .75rem; color: var(--ink-3); margin-bottom: 1.5rem; }
+    .r-divider { height: 1px; background: var(--border); margin-bottom: 1.2rem; }
+    .r-investors-label { font-size: .7rem; color: var(--ink-3); text-transform: uppercase; letter-spacing: .8px; margin-bottom: .7rem; }
+    .r-chips { display: flex; gap: .4rem; flex-wrap: wrap; }
+    .r-chip {
+      font-size: .75rem; padding: .3rem .7rem;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 7px; color: var(--ink-2);
+    }
+    .r-use { margin-top: 1.2rem; font-size: .8rem; color: var(--ink-2); line-height: 1.65; }
+
+    .backer-row {
+      margin-top: 3rem; text-align: center;
+    }
+    .backer-label { font-size: .72rem; color: var(--ink-3); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 1.5rem; }
+    .backers { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .backer {
+      padding: .65rem 1.6rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; font-size: .85rem; font-weight: 500; color: var(--ink-2);
+      transition: border-color .2s, color .2s;
+    }
+    .backer:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── TEAM ── */
+    #team { background: var(--surface); }
+    .team-head { max-width: 560px; margin-bottom: 3.5rem; }
+
+    .team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; margin-bottom: 3rem; }
+    .tc {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 16px; padding: 1.8rem 1.4rem; text-align: center;
+      transition: border-color .25s, transform .25s, box-shadow .25s;
+    }
+    .tc:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 10px 32px rgba(91,79,255,.09); }
+    .tc-avatar {
+      width: 72px; height: 72px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 700;
-      color: #fff; position: relative;
+      font-family: 'Instrument Serif', serif; font-size: 1.5rem; color: #fff;
+      margin: 0 auto 1rem;
     }
-    .team-avatar::after {
-      content: ''; position: absolute; inset: -3px; border-radius: 50%;
-      border: 2px solid transparent;
-      background: linear-gradient(135deg, var(--primary), var(--secondary)) border-box;
-      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: destination-out; mask-composite: exclude;
-    }
-    .team-name { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 600; margin-bottom: .25rem; }
-    .team-role {
-      font-size: .75rem; color: var(--primary); font-weight: 600;
-      letter-spacing: .5px; text-transform: uppercase; margin-bottom: .8rem;
-    }
-    .team-bio { font-size: .8rem; color: var(--text-muted); line-height: 1.6; }
-    .team-tags { display: flex; gap: .4rem; flex-wrap: wrap; justify-content: center; margin-top: 1rem; }
-    .team-tag {
-      font-size: .65rem; padding: .2rem .6rem;
-      background: rgba(108,99,255,.1); border: 1px solid rgba(108,99,255,.2);
-      border-radius: 100px; color: var(--primary);
+    .tc-name { font-size: .9rem; font-weight: 600; color: var(--ink); margin-bottom: .2rem; }
+    .tc-role { font-size: .72rem; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: .5px; margin-bottom: .8rem; }
+    .tc-bio { font-size: .78rem; color: var(--ink-2); line-height: 1.65; }
+    .tc-tags { display: flex; gap: .3rem; flex-wrap: wrap; justify-content: center; margin-top: .9rem; }
+    .tc-tag {
+      font-size: .63rem; padding: .18rem .5rem;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 5px; color: var(--ink-3);
     }
 
     /* Advisors */
-    .advisors { margin-top: 4rem; }
-    .advisors h3 {
-      font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; font-weight: 600;
-      margin-bottom: 2rem; text-align: center; color: var(--text-muted);
+    .advisors-section { margin-top: 4rem; padding-top: 3rem; border-top: 1px solid var(--border); }
+    .advisors-label { font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-3); margin-bottom: 1.5rem; }
+    .advisor-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .adv {
+      display: flex; gap: .9rem; align-items: center;
+      border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem;
+      background: var(--surface-2); transition: border-color .2s;
     }
-    .advisor-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
-    .advisor-card {
-      display: flex; gap: 1rem; align-items: center;
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 14px; padding: 1.2rem;
-      transition: border-color .3s;
-    }
-    .advisor-card:hover { border-color: var(--border); border-color: rgba(0,212,255,.3); }
-    .advisor-avatar {
-      width: 50px; height: 50px; border-radius: 50%; flex-shrink: 0;
+    .adv:hover { border-color: var(--accent); }
+    .adv-avatar {
+      width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
-      font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 700;
+      font-family: 'Instrument Serif', serif; font-size: .95rem; color: #fff;
     }
-    .advisor-info h4 { font-family: 'Space Grotesk', sans-serif; font-size: .88rem; margin-bottom: .15rem; }
-    .advisor-info p { font-size: .75rem; color: var(--text-muted); }
+    .adv h4 { font-size: .85rem; font-weight: 600; color: var(--ink); margin-bottom: .15rem; }
+    .adv p { font-size: .73rem; color: var(--ink-2); line-height: 1.4; }
 
-    /* ─── CONTACT ─── */
-    #contact {
-      background: linear-gradient(180deg, var(--bg) 0%, #030510 100%);
-    }
-    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
-    .contact-info h2 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 700;
-      margin-bottom: 1rem; line-height: 1.2;
-    }
-    .contact-info p { color: var(--text-muted); line-height: 1.8; margin-bottom: 2rem; }
-    .contact-items { display: flex; flex-direction: column; gap: 1rem; }
-    .contact-item {
-      display: flex; align-items: center; gap: 1rem;
-      padding: 1rem 1.2rem; background: var(--bg-card);
-      border: 1px solid var(--border); border-radius: 12px;
-    }
-    .contact-item-icon {
-      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
-      background: rgba(108,99,255,.15); display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem;
-    }
-    .contact-item-text h5 { font-size: .82rem; color: var(--text-muted); margin-bottom: .15rem; }
-    .contact-item-text p { font-size: .9rem; color: var(--text); }
+    /* ── CONTACT ── */
+    #contact { background: var(--surface-2); }
+    .contact-wrap { display: grid; grid-template-columns: 1fr 1.1fr; gap: 5rem; align-items: start; }
 
-    /* Form */
-    .contact-form {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 24px; padding: 2.5rem;
+    .contact-info .section-h { margin-bottom: 1rem; }
+    .contact-info .section-p { margin-bottom: 2rem; }
+    .c-items { display: flex; flex-direction: column; gap: .75rem; }
+    .c-item {
+      display: flex; gap: .9rem; align-items: center;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: .9rem 1.1rem;
     }
-    .contact-form h3 {
-      font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; margin-bottom: 1.8rem;
+    .c-icon {
+      width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0;
+      background: var(--accent-light); border: 1px solid var(--accent-mid);
+      display: flex; align-items: center; justify-content: center; font-size: .95rem;
     }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    .form-group { margin-bottom: 1.2rem; }
-    .form-group label { display: block; font-size: .8rem; color: var(--text-muted); margin-bottom: .5rem; }
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-      width: 100%; padding: .85rem 1rem;
-      background: rgba(255,255,255,.04); border: 1px solid var(--border);
-      border-radius: 10px; color: var(--text);
-      font-family: 'Inter', sans-serif; font-size: .9rem;
+    .c-item h5 { font-size: .72rem; color: var(--ink-3); margin-bottom: .1rem; }
+    .c-item p { font-size: .85rem; color: var(--ink); font-weight: 500; }
+
+    .contact-form-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 2.5rem;
+    }
+    .contact-form-box h3 { font-family: 'Instrument Serif', serif; font-size: 1.5rem; color: var(--ink); margin-bottom: 2rem; }
+    .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .f-group { margin-bottom: 1.1rem; }
+    .f-group label { display: block; font-size: .75rem; font-weight: 600; color: var(--ink-2); margin-bottom: .45rem; letter-spacing: .2px; }
+    .f-group input,
+    .f-group textarea,
+    .f-group select {
+      width: 100%; padding: .75rem 1rem;
+      background: var(--surface-2); border: 1.5px solid var(--border);
+      border-radius: 9px; color: var(--ink);
+      font-family: 'Inter', sans-serif; font-size: .88rem;
       transition: border-color .2s, box-shadow .2s; outline: none;
     }
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
-      border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108,99,255,.15);
+    .f-group input::placeholder, .f-group textarea::placeholder { color: var(--ink-4); }
+    .f-group input:focus, .f-group textarea:focus, .f-group select:focus {
+      border-color: var(--accent); background: var(--surface);
+      box-shadow: 0 0 0 3px rgba(91,79,255,.1);
     }
-    .form-group textarea { resize: vertical; min-height: 120px; }
-    .form-group select option { background: #0d1224; }
-    .form-submit {
-      width: 100%; padding: 1rem;
-      background: linear-gradient(135deg, var(--primary), #9b5de5);
-      color: #fff; border: none; border-radius: 10px;
-      font-family: 'Inter', sans-serif; font-size: .95rem; font-weight: 600;
-      cursor: pointer; box-shadow: 0 0 30px rgba(108,99,255,.4);
-      transition: transform .2s, box-shadow .2s;
+    .f-group textarea { resize: vertical; min-height: 110px; }
+    .f-submit {
+      width: 100%; padding: .9rem;
+      background: var(--ink); color: #fff;
+      border: none; border-radius: 9px; font-size: .9rem; font-weight: 500;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: background .2s, transform .15s, box-shadow .2s;
     }
-    .form-submit:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(108,99,255,.6); }
+    .f-submit:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(91,79,255,.3); }
 
-    /* ─── FOOTER ─── */
+    /* ── FOOTER ── */
     footer {
-      background: #030510; border-top: 1px solid var(--border);
-      padding: 3rem 6vw 2rem;
+      background: var(--ink); color: rgba(255,255,255,.6);
+      padding: 4rem 6vw 2rem;
     }
-    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
-    .footer-brand .nav-logo { font-size: 1.6rem; display: block; margin-bottom: 1rem; }
-    .footer-brand p { font-size: .83rem; color: var(--text-muted); line-height: 1.7; max-width: 260px; }
-    .footer-social { display: flex; gap: .7rem; margin-top: 1.5rem; }
-    .social-btn {
-      width: 36px; height: 36px; border-radius: 8px;
-      background: rgba(255,255,255,.06); border: 1px solid var(--border);
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+    .f-brand .nav-logo { color: #fff; display: block; margin-bottom: .9rem; }
+    .f-brand .nav-logo span { color: #a78bfa; }
+    .f-brand p { font-size: .82rem; line-height: 1.75; max-width: 240px; }
+    .f-social { display: flex; gap: .6rem; margin-top: 1.4rem; }
+    .f-soc {
+      width: 34px; height: 34px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.12);
       display: flex; align-items: center; justify-content: center;
-      font-size: .9rem; text-decoration: none; color: var(--text-muted);
-      transition: background .2s, color .2s;
+      font-size: .82rem; text-decoration: none; color: rgba(255,255,255,.5);
+      transition: border-color .2s, color .2s;
     }
-    .social-btn:hover { background: rgba(108,99,255,.2); color: var(--text); }
-    .footer-col h5 {
-      font-family: 'Space Grotesk', sans-serif; font-size: .85rem; font-weight: 600;
-      margin-bottom: 1.2rem; color: var(--text);
-    }
-    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: .6rem; }
-    .footer-col a { font-size: .82rem; color: var(--text-muted); text-decoration: none; transition: color .2s; }
-    .footer-col a:hover { color: var(--secondary); }
+    .f-soc:hover { border-color: rgba(255,255,255,.4); color: #fff; }
+    .f-col h5 { font-size: .78rem; font-weight: 600; color: rgba(255,255,255,.9); letter-spacing: .5px; margin-bottom: 1rem; }
+    .f-col ul { list-style: none; display: flex; flex-direction: column; gap: .55rem; }
+    .f-col a { font-size: .8rem; color: rgba(255,255,255,.45); text-decoration: none; transition: color .2s; }
+    .f-col a:hover { color: rgba(255,255,255,.9); }
     .footer-bottom {
-      padding-top: 2rem; border-top: 1px solid var(--border);
-      display: flex; justify-content: space-between; align-items: center;
-      flex-wrap: wrap; gap: 1rem;
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding-top: 1.8rem;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .8rem;
     }
-    .footer-bottom p { font-size: .78rem; color: var(--text-muted); }
+    .footer-bottom p { font-size: .75rem; }
 
-    /* ─── Responsive ─── */
+    /* ── RESPONSIVE ── */
     @media (max-width: 1024px) {
       .team-grid { grid-template-columns: repeat(2, 1fr); }
-      .footer-grid { grid-template-columns: 1fr 1fr; }
-      .feature-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .specs-strip { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 768px) {
-      .nav-links, .nav-cta { display: none; }
+      .nav-links, .nav-right { display: none; }
       .hamburger { display: flex; }
-      .about-grid, .product-showcase, .contact-grid { grid-template-columns: 1fr; }
-      .about-visual { display: none; }
-      .hero-stats { flex-direction: column; gap: 1.5rem; padding: 1.5rem 2rem; }
-      .rounds-grid { grid-template-columns: 1fr; }
+      .about-layout, .contact-wrap { grid-template-columns: 1fr; }
+      .about-visual-side { display: none; }
+      .rounds { grid-template-columns: 1fr; }
       .advisor-row { grid-template-columns: 1fr; }
-      .footer-grid { grid-template-columns: 1fr; }
-      .form-row { grid-template-columns: 1fr; }
-      .feature-grid { grid-template-columns: 1fr; }
-      .team-grid { grid-template-columns: 1fr 1fr; }
+      .hero-metrics { flex-wrap: wrap; gap: 1.5rem; }
+      .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+      .f-row { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .total-bar { flex-direction: column; }
       section { padding: 70px 5vw; }
+      .specs-strip { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 480px) {
       .team-grid { grid-template-columns: 1fr; }
+      .specs-strip { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-<!-- ─── NAV ─── -->
-<nav>
-  <div class="nav-logo">OurUFO</div>
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo">Our<span>UFO</span></a>
   <ul class="nav-links">
-    <li><a href="#about">关于</a></li>
-    <li><a href="#product">产品</a></li>
-    <li><a href="#funding">融资</a></li>
-    <li><a href="#team">团队</a></li>
-    <li><a href="#contact">联系</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#product">Product</a></li>
+    <li><a href="#funding">Funding</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="#contact">Contact</a></li>
   </ul>
-  <a href="#contact" class="nav-cta">立即申请内测 →</a>
-  <div class="hamburger" onclick="toggleMenu()">
-    <span></span><span></span><span></span>
+  <div class="nav-right">
+    <a href="#contact" class="nav-btn">Request Early Access</a>
   </div>
+  <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 <div class="mobile-menu" id="mobileMenu">
   <ul>
-    <li><a href="#about" onclick="toggleMenu()">关于我们</a></li>
-    <li><a href="#product" onclick="toggleMenu()">产品</a></li>
-    <li><a href="#funding" onclick="toggleMenu()">融资</a></li>
-    <li><a href="#team" onclick="toggleMenu()">团队</a></li>
-    <li><a href="#contact" onclick="toggleMenu()">联系我们</a></li>
+    <li><a href="#about" onclick="toggleMenu()">About</a></li>
+    <li><a href="#product" onclick="toggleMenu()">Product</a></li>
+    <li><a href="#funding" onclick="toggleMenu()">Funding</a></li>
+    <li><a href="#team" onclick="toggleMenu()">Team</a></li>
+    <li><a href="#contact" onclick="toggleMenu()">Contact</a></li>
   </ul>
 </div>
 
-<!-- ─── HERO ─── -->
+<!-- HERO -->
 <section id="hero">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
 
-  <div class="hero-badge">🚀 现已开放 Series A 战略合作</div>
+  <div class="hero-badge">
+    <div class="badge-dot"></div>
+    Series A Open — Strategic Partners Welcome
+  </div>
 
   <h1 class="hero-title">
-    <span class="grad">Unidentified</span><br />
-    <span class="grad">Future Objects</span>
+    The future of work<br />is <em>spatial.</em>
   </h1>
   <p class="hero-sub">
-    我们构建下一代 AI 空间协作平台——让全球分布式团队像在同一物理空间内一样无缝协作，
-    重新定义人机协同的边界。
+    OurUFO builds the AI-powered spatial collaboration platform that lets globally distributed teams work as if they share the same room — redefining the boundary between human and machine.
   </p>
-  <div class="hero-buttons">
-    <a href="#product" class="btn-primary">探索产品 ✦</a>
-    <a href="#funding" class="btn-ghost">查看融资情况</a>
+  <div class="hero-ctas">
+    <a href="#product" class="btn-fill">Explore the Platform →</a>
+    <a href="#funding" class="btn-outline">View Funding</a>
   </div>
 
-  <div class="hero-stats">
-    <div class="stat-item">
-      <div class="stat-num">$18M</div>
-      <div class="stat-label">累计融资</div>
+  <div class="hero-metrics">
+    <div class="metric">
+      <div class="metric-num">$18M</div>
+      <div class="metric-label">Total Raised</div>
     </div>
-    <div class="stat-item">
-      <div class="stat-num">120K+</div>
-      <div class="stat-label">注册用户</div>
+    <div class="metric">
+      <div class="metric-num">120K+</div>
+      <div class="metric-label">Registered Users</div>
     </div>
-    <div class="stat-item">
-      <div class="stat-num">38</div>
-      <div class="stat-label">全球城市覆盖</div>
+    <div class="metric">
+      <div class="metric-num">38</div>
+      <div class="metric-label">Cities Worldwide</div>
     </div>
-    <div class="stat-item">
-      <div class="stat-num">4.9★</div>
-      <div class="stat-label">用户评分</div>
+    <div class="metric">
+      <div class="metric-num">4.9 ★</div>
+      <div class="metric-label">User Rating</div>
     </div>
   </div>
 </section>
 
-<!-- ─── ABOUT ─── -->
+<!-- ABOUT -->
 <section id="about">
-  <div class="about-grid fade-in">
+  <div class="about-layout fade-up">
     <div>
-      <span class="section-label">About Us</span>
-      <h2 class="section-title">我们相信，<br />未来的工作<br />不受空间限制</h2>
-      <p class="section-desc">
-        OurUFO 成立于 2022 年，由前 Google DeepMind 与 Meta Reality Labs 的工程师联合创办。
-        我们的使命是通过 AI 与空间计算的融合，消除物理距离对人类协作的制约。
+      <div class="section-eyebrow">About Us</div>
+      <h2 class="section-h">We believe great work<br />has no address.</h2>
+      <p class="section-p" style="margin-bottom:2.5rem">
+        Founded in 2022 by engineers from Google DeepMind and Meta Reality Labs, OurUFO merges AI and spatial computing to dissolve the friction of physical distance in team collaboration.
       </p>
-      <div class="about-points">
-        <div class="about-point">
-          <div class="point-icon" style="background:rgba(108,99,255,.15)">🧠</div>
-          <div class="about-point-text">
-            <h4>AI 原生架构</h4>
-            <p>基于大语言模型构建的实时翻译、会议摘要与决策辅助系统，让沟通效率提升 3 倍。</p>
+      <div class="about-cards">
+        <div class="about-card">
+          <div class="ac-icon" style="background:#f0eeff">🧠</div>
+          <div>
+            <h4>AI-Native Architecture</h4>
+            <p>Real-time translation, meeting summaries, and decision support built on LLMs — making every conversation 3× more effective.</p>
           </div>
         </div>
-        <div class="about-point">
-          <div class="point-icon" style="background:rgba(0,212,255,.1)">🌐</div>
-          <div class="about-point-text">
-            <h4>空间协作引擎</h4>
-            <p>自研的 SpatialSync™ 技术，支持 AR/VR/PC 多端无缝接入，同一空间最高容纳 500 人并行协作。</p>
+        <div class="about-card">
+          <div class="ac-icon" style="background:#e8fafb">🌐</div>
+          <div>
+            <h4>SpatialSync™ Engine</h4>
+            <p>Our proprietary AR/VR/PC multi-endpoint technology supports up to 500 simultaneous collaborators in a single shared space.</p>
           </div>
         </div>
-        <div class="about-point">
-          <div class="point-icon" style="background:rgba(255,107,157,.1)">🔒</div>
-          <div class="about-point-text">
-            <h4>企业级安全</h4>
-            <p>端到端加密，SOC 2 Type II 认证，私有化部署方案满足金融与政务客户需求。</p>
+        <div class="about-card">
+          <div class="ac-icon" style="background:#fff0f3">🔒</div>
+          <div>
+            <h4>Enterprise-Grade Security</h4>
+            <p>End-to-end encryption, SOC 2 Type II certified, with on-premise deployment options for regulated industries.</p>
           </div>
         </div>
       </div>
     </div>
-    <div class="about-visual">
-      <div class="about-ring ring-1"><div class="ring-dot"></div></div>
-      <div class="about-ring ring-2"><div class="ring-dot"></div></div>
-      <div class="about-ring ring-3"><div class="ring-dot"></div></div>
-      <div class="about-center-icon">🛸</div>
+
+    <!-- Dashboard preview card -->
+    <div class="about-visual-side">
+      <div class="av-float av-float-1">
+        <div class="av-float-label">Active sessions today</div>
+        <div class="av-float-val">↑ 2,847 workspaces</div>
+      </div>
+      <div class="av-card">
+        <div class="av-top">
+          <div class="av-logo-sm">🛸</div>
+          <div class="av-top-text">
+            <h5>OurUFO Workspace</h5>
+            <p>Product Team · 28 members online</p>
+          </div>
+        </div>
+        <div class="av-stat-row">
+          <div class="av-stat"><div class="av-stat-l">Collaboration hrs</div><div class="av-stat-v">6.2h</div></div>
+          <div class="av-stat"><div class="av-stat-l">AI tasks handled</div><div class="av-stat-v">147</div></div>
+          <div class="av-stat"><div class="av-stat-l">Efficiency gain</div><div class="av-stat-v">+312%</div></div>
+          <div class="av-stat"><div class="av-stat-l">Languages live</div><div class="av-stat-v">12</div></div>
+        </div>
+        <div class="av-progress-label">Sprint progress</div>
+        <div class="av-prog-row"><span class="av-prog-name">Product</span><div class="av-prog-track"><div class="av-prog-fill" style="width:85%"></div></div><span style="font-size:.68rem;color:var(--ink-3)">85%</span></div>
+        <div class="av-prog-row"><span class="av-prog-name">Engineering</span><div class="av-prog-track"><div class="av-prog-fill" style="width:62%"></div></div><span style="font-size:.68rem;color:var(--ink-3)">62%</span></div>
+        <div class="av-prog-row"><span class="av-prog-name">Marketing</span><div class="av-prog-track"><div class="av-prog-fill" style="width:40%"></div></div><span style="font-size:.68rem;color:var(--ink-3)">40%</span></div>
+        <div class="av-tags">
+          <span class="av-tag">🟢 AI Assistant Live</span>
+          <span class="av-tag">🌐 Cross-timezone Sync</span>
+          <span class="av-tag">🔒 E2E Encrypted</span>
+        </div>
+      </div>
+      <div class="av-float av-float-2">
+        <div class="av-float-label">NPS score</div>
+        <div class="av-float-val">72 · Exceptional</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ─── PRODUCT ─── -->
+<!-- PRODUCT -->
 <section id="product">
-  <div class="product-header fade-in">
-    <span class="section-label">Product</span>
-    <h2 class="section-title">重新定义远程协作的<br />方式与体验</h2>
-    <p class="section-desc">OurUFO 平台融合空间计算与生成式 AI，打造沉浸式、智能化的团队协作新范式。</p>
+  <div class="product-head fade-up">
+    <div class="section-eyebrow">Product</div>
+    <h2 class="section-h">Everything your team<br />needs to move fast.</h2>
+    <p class="section-p">OurUFO fuses spatial computing with generative AI to create an immersive, intelligent collaboration paradigm.</p>
   </div>
 
-  <div class="product-showcase fade-in">
-    <!-- Mock screen -->
-    <div class="product-screen">
-      <div class="screen-bar">
-        <div class="dot dot-r"></div>
-        <div class="dot dot-y"></div>
-        <div class="dot dot-g"></div>
-        <div class="screen-url">app.ourufo.org / workspace</div>
-      </div>
-      <div class="screen-body">
-        <div class="mini-dash">
-          <div class="mini-card">
-            <div class="mini-card-label">今日协作时长</div>
-            <div class="mini-card-val">6.2h</div>
-          </div>
-          <div class="mini-card">
-            <div class="mini-card-label">AI 处理任务</div>
-            <div class="mini-card-val">147</div>
-          </div>
-          <div class="mini-card">
-            <div class="mini-card-label">在线成员</div>
-            <div class="mini-card-val">28</div>
-          </div>
-          <div class="mini-card">
-            <div class="mini-card-label">效率提升</div>
-            <div class="mini-card-val">+312%</div>
-          </div>
-        </div>
-        <div class="mini-bar">
-          <div class="mini-bar-label">团队任务进度</div>
-          <div class="bar-row"><span class="bar-name">产品设计</span><div class="bar-track"><div class="bar-fill" style="width:85%"></div></div><span style="font-size:.68rem;color:var(--text-muted)">85%</span></div>
-          <div class="bar-row"><span class="bar-name">后端开发</span><div class="bar-track"><div class="bar-fill" style="width:62%"></div></div><span style="font-size:.68rem;color:var(--text-muted)">62%</span></div>
-          <div class="bar-row"><span class="bar-name">市场推广</span><div class="bar-track"><div class="bar-fill" style="width:40%"></div></div><span style="font-size:.68rem;color:var(--text-muted)">40%</span></div>
-        </div>
-        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-          <span style="font-size:.72rem;padding:.3rem .7rem;background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.2);border-radius:6px;color:var(--primary)">🟢 AI 助手在线</span>
-          <span style="font-size:.72rem;padding:.3rem .7rem;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.15);border-radius:6px;color:var(--secondary)">🌐 跨时区同步</span>
-          <span style="font-size:.72rem;padding:.3rem .7rem;background:rgba(255,107,157,.08);border:1px solid rgba(255,107,157,.15);border-radius:6px;color:var(--accent)">🔒 端到端加密</span>
-        </div>
-      </div>
+  <div class="features-grid fade-up">
+    <div class="feat">
+      <div class="feat-icon-box" style="background:#f0eeff">🏠</div>
+      <h4>UFO Room</h4>
+      <p>WebXR-powered virtual studios featuring 3D whiteboards, spatial sticky notes, and real-time co-editing. Pair with AR glasses for seamless overlay on your physical environment.</p>
     </div>
-
-    <!-- Feature list -->
-    <div class="feature-list">
-      <div class="feature-item">
-        <div class="feature-num">01</div>
-        <div class="feature-content">
-          <h4>UFO Room — 沉浸式空间工作室</h4>
-          <p>基于 WebXR 技术构建的虚拟工作空间，支持 3D 白板、空间便签与实时协作编辑。接入 AR 眼镜可实现与现实空间的无缝叠加。</p>
-        </div>
-      </div>
-      <div class="feature-item">
-        <div class="feature-num">02</div>
-        <div class="feature-content">
-          <h4>OmniAI 助手 — 全场景 AI 协作伙伴</h4>
-          <p>实时会议转录、多语言翻译、自动生成 Action Items，并可根据历史沟通数据智能预测任务风险与瓶颈。</p>
-        </div>
-      </div>
-      <div class="feature-item">
-        <div class="feature-num">03</div>
-        <div class="feature-content">
-          <h4>FlowSync — 跨工具流程自动化</h4>
-          <p>与 Jira、Notion、Slack、GitHub 等 200+ 工具深度集成，AI 自动同步任务状态，消除信息孤岛。</p>
-        </div>
-      </div>
-      <div class="feature-item">
-        <div class="feature-num">04</div>
-        <div class="feature-content">
-          <h4>Presence Engine — 智能在线感知</h4>
-          <p>通过摄像头与麦克风的轻量分析，感知团队成员专注状态，智能调度会议时间，避免低效打扰。</p>
-        </div>
-      </div>
+    <div class="feat">
+      <div class="feat-icon-box" style="background:#e8fafb">🤖</div>
+      <h4>OmniAI Assistant</h4>
+      <p>Live transcription, 42-language translation, auto-generated action items, and predictive risk flagging based on your team's communication history.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon-box" style="background:#fff0f3">⚡</div>
+      <h4>FlowSync</h4>
+      <p>Deep integration with Jira, Notion, Slack, GitHub, and 200+ tools. AI automatically syncs task status across platforms, eliminating information silos entirely.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon-box" style="background:#fff8e6">👁</div>
+      <h4>Presence Engine</h4>
+      <p>Lightweight camera and microphone analysis intelligently detects focus states, schedules meetings at optimal times, and prevents low-value interruptions.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon-box" style="background:#e8f8f0">📊</div>
+      <h4>Insight Dashboard</h4>
+      <p>Deep analytics on collaboration patterns with visual efficiency reports and AI-driven improvement recommendations tailored to your team's workflows.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon-box" style="background:#f0eeff">🔌</div>
+      <h4>Open API</h4>
+      <p>Full REST & WebSocket APIs with comprehensive docs, SDKs, and enterprise SSO. Build custom integrations and extend OurUFO to fit any workflow.</p>
     </div>
   </div>
 
-  <!-- Feature grid -->
-  <div class="feature-grid fade-in">
-    <div class="feat-card">
-      <div class="feat-icon" style="background:rgba(108,99,255,.15)">⚡</div>
-      <h4>极低延迟</h4>
-      <p>全球 12 个 PoP 节点，P99 延迟 &lt; 50ms，确保流畅的实时协作体验。</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon" style="background:rgba(0,212,255,.1)">🎯</div>
-      <h4>智能优先级</h4>
-      <p>AI 自动分析任务依赖关系，动态调整团队工作优先级，减少决策疲劳。</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon" style="background:rgba(255,107,157,.1)">📊</div>
-      <h4>效率洞察</h4>
-      <p>深度分析团队协作模式，提供可视化效率报告与改进建议。</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon" style="background:rgba(40,200,130,.1)">🔌</div>
-      <h4>开放 API</h4>
-      <p>完整的 REST & WebSocket API，支持企业自定义集成与二次开发。</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon" style="background:rgba(255,200,60,.1)">🌍</div>
-      <h4>多语言支持</h4>
-      <p>实时支持 42 种语言互译，打破全球团队的语言壁垒。</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon" style="background:rgba(108,99,255,.15)">☁️</div>
-      <h4>弹性部署</h4>
-      <p>SaaS 云端 / 私有化 / 混合云三种部署模式，满足不同合规要求。</p>
-    </div>
+  <div class="specs-strip fade-up">
+    <div class="spec"><div class="spec-val">&lt;50ms</div><div class="spec-label">P99 Latency across 12 global PoPs</div></div>
+    <div class="spec"><div class="spec-val">500</div><div class="spec-label">Max concurrent users per space</div></div>
+    <div class="spec"><div class="spec-val">42</div><div class="spec-label">Live translation languages</div></div>
+    <div class="spec"><div class="spec-val">200+</div><div class="spec-label">Third-party integrations</div></div>
   </div>
 </section>
 
-<!-- ─── FUNDING ─── -->
+<!-- FUNDING -->
 <section id="funding">
-  <div class="funding-header fade-in">
-    <span class="section-label">Funding</span>
-    <h2 class="section-title">融资历程</h2>
-    <p class="section-desc">获得全球顶级 VC 与战略投资方支持，持续推动 AI 协作技术的边界探索。</p>
+  <div class="funding-head fade-up">
+    <div class="section-eyebrow">Funding</div>
+    <h2 class="section-h">Backed by the best<br />to build what's next.</h2>
+    <p class="section-p">We've raised from the world's leading venture firms and strategic partners who share our conviction in the spatial computing era.</p>
   </div>
 
-  <div class="funding-total fade-in">
-    <div class="funding-total-label">累计融资总额</div>
-    <div class="funding-total-num">$18,000,000</div>
-    <div class="funding-total-sub">来自 7 家顶级机构投资方 · 最新估值 $120M</div>
-  </div>
-
-  <div class="rounds-grid fade-in">
-    <!-- Pre-seed -->
-    <div class="round-card">
-      <div class="round-tag">Pre-Seed</div>
-      <div class="round-amount">$800K</div>
-      <div class="round-date">2022 年 Q3 · 天使轮</div>
-      <div class="round-investors">
-        <h5>投资方</h5>
-        <span class="investor-chip"><span class="investor-dot"></span>Y Combinator</span>
-        <span class="investor-chip"><span class="investor-dot"></span>个人天使</span>
-      </div>
-      <div class="round-use">
-        <h5>资金用途</h5>
-        <p>核心技术验证（POC）、初始团队搭建、MVP 产品研发启动。</p>
-      </div>
+  <div class="total-bar fade-up">
+    <div class="total-left">
+      <h3>Total Raised</h3>
+      <div class="total-amount">$18,000,000</div>
     </div>
-
-    <!-- Seed -->
-    <div class="round-card" style="border-color:rgba(0,212,255,.2)">
-      <div class="round-tag" style="background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.3);color:var(--secondary)">Seed Round</div>
-      <div class="round-amount">$4.2M</div>
-      <div class="round-date">2023 年 Q2 · 种子轮</div>
-      <div class="round-investors">
-        <h5>投资方</h5>
-        <span class="investor-chip"><span class="investor-dot"></span>Sequoia China</span>
-        <span class="investor-chip"><span class="investor-dot"></span>GGV Capital</span>
-        <span class="investor-chip"><span class="investor-dot"></span>Pear VC</span>
-      </div>
-      <div class="round-use">
-        <h5>资金用途</h5>
-        <p>产品正式上线、PMF 验证、首批企业客户获取与核心工程团队扩张。</p>
-      </div>
-    </div>
-
-    <!-- Series A -->
-    <div class="round-card" style="border-color:rgba(255,107,157,.2)">
-      <div class="round-tag" style="background:rgba(255,107,157,.1);border-color:rgba(255,107,157,.3);color:var(--accent)">Series A</div>
-      <div class="round-amount">$13M</div>
-      <div class="round-date">2024 年 Q4 · A 轮</div>
-      <div class="round-investors">
-        <h5>领投方</h5>
-        <span class="investor-chip"><span class="investor-dot" style="background:var(--accent)"></span>Andreessen Horowitz</span>
-        <h5 style="margin-top:.6rem">跟投方</h5>
-        <span class="investor-chip"><span class="investor-dot" style="background:var(--accent)"></span>Source Code Capital</span>
-        <span class="investor-chip"><span class="investor-dot" style="background:var(--accent)"></span>Matrix Partners</span>
-        <span class="investor-chip"><span class="investor-dot" style="background:var(--accent)"></span>Salesforce Ventures</span>
-      </div>
-      <div class="round-use">
-        <h5>资金用途</h5>
-        <p>全球市场拓展（北美 + 东南亚）、企业级产品研发、AI 基础设施扩容与战略并购储备。</p>
-      </div>
+    <div class="total-right">
+      <div class="total-stat"><h4>$120M</h4><p>Post-money Valuation</p></div>
+      <div class="total-stat"><h4>7</h4><p>Institutional Investors</p></div>
+      <div class="total-stat"><h4>3</h4><p>Funding Rounds</p></div>
     </div>
   </div>
 
-  <!-- Strategic investors / partners -->
-  <div class="investors-logos fade-in">
-    <h3>战略投资方 &amp; 合作伙伴</h3>
-    <div class="logo-row">
-      <div class="logo-pill">a16z</div>
-      <div class="logo-pill">Sequoia China</div>
-      <div class="logo-pill">GGV Capital</div>
-      <div class="logo-pill">Matrix Partners</div>
-      <div class="logo-pill">Salesforce Ventures</div>
-      <div class="logo-pill">Y Combinator</div>
+  <div class="rounds fade-up">
+    <div class="round">
+      <div class="round-stripe" style="background:linear-gradient(90deg,#6c63ff,#a78bfa)"></div>
+      <div class="r-tag" style="background:#f0eeff;color:#6c63ff">Pre-Seed · Angel</div>
+      <div class="r-amount">$800K</div>
+      <div class="r-date">Q3 2022</div>
+      <div class="r-divider"></div>
+      <div class="r-investors-label">Investors</div>
+      <div class="r-chips">
+        <span class="r-chip">Y Combinator</span>
+        <span class="r-chip">Angel Network</span>
+      </div>
+      <div class="r-use">POC validation, core team formation, and MVP development kickoff.</div>
+    </div>
+
+    <div class="round">
+      <div class="round-stripe" style="background:linear-gradient(90deg,#00bcd4,#0099cc)"></div>
+      <div class="r-tag" style="background:#e8fafb;color:#00838f">Seed Round</div>
+      <div class="r-amount">$4.2M</div>
+      <div class="r-date">Q2 2023</div>
+      <div class="r-divider"></div>
+      <div class="r-investors-label">Investors</div>
+      <div class="r-chips">
+        <span class="r-chip">Sequoia China</span>
+        <span class="r-chip">GGV Capital</span>
+        <span class="r-chip">Pear VC</span>
+      </div>
+      <div class="r-use">Official product launch, PMF validation, and first 50 enterprise clients acquired.</div>
+    </div>
+
+    <div class="round">
+      <div class="round-stripe" style="background:linear-gradient(90deg,#f4436c,#ff8a65)"></div>
+      <div class="r-tag" style="background:#fff0f3;color:#e91e63">Series A</div>
+      <div class="r-amount">$13M</div>
+      <div class="r-date">Q4 2024</div>
+      <div class="r-divider"></div>
+      <div class="r-investors-label">Lead · Follow-on</div>
+      <div class="r-chips">
+        <span class="r-chip">a16z (Lead)</span>
+        <span class="r-chip">Source Code</span>
+        <span class="r-chip">Matrix Partners</span>
+        <span class="r-chip">Salesforce Ventures</span>
+      </div>
+      <div class="r-use">Global expansion (North America + SE Asia), enterprise R&D, AI infrastructure scaling, and M&A reserves.</div>
+    </div>
+  </div>
+
+  <div class="backer-row fade-up">
+    <div class="backer-label">Strategic Backers &amp; Partners</div>
+    <div class="backers">
+      <div class="backer">a16z</div>
+      <div class="backer">Sequoia China</div>
+      <div class="backer">GGV Capital</div>
+      <div class="backer">Matrix Partners</div>
+      <div class="backer">Salesforce Ventures</div>
+      <div class="backer">Y Combinator</div>
     </div>
   </div>
 </section>
 
-<!-- ─── TEAM ─── -->
+<!-- TEAM -->
 <section id="team">
-  <div class="team-header fade-in">
-    <span class="section-label">Team</span>
-    <h2 class="section-title">由信仰者组成的<br />创造者团队</h2>
-    <p class="section-desc">来自 Google、Meta、字节跳动、OpenAI 的顶尖工程师与产品人，共同打造 OurUFO。</p>
+  <div class="team-head fade-up">
+    <div class="section-eyebrow">Team</div>
+    <h2 class="section-h">A team of builders<br />who've done it before.</h2>
+    <p class="section-p">Veterans from Google, Meta, ByteDance, and OpenAI, united by a shared obsession with the future of work.</p>
   </div>
 
-  <div class="team-grid fade-in">
-    <!-- CEO -->
-    <div class="team-card">
-      <div class="team-avatar" style="background:linear-gradient(135deg,#6c63ff,#9b5de5)">陈</div>
-      <div class="team-name">陈 远航</div>
-      <div class="team-role">CEO &amp; Co-Founder</div>
-      <div class="team-bio">前 Google X 首席产品经理，斯坦福 CS 博士。曾主导 Project Starline 空间视频协作项目，拥有 12 项 AR/XR 专利。</div>
-      <div class="team-tags">
-        <span class="team-tag">产品战略</span>
-        <span class="team-tag">XR</span>
-        <span class="team-tag">AI</span>
-      </div>
+  <div class="team-grid fade-up">
+    <div class="tc">
+      <div class="tc-avatar" style="background:linear-gradient(135deg,#6c63ff,#9b5de5)">CY</div>
+      <div class="tc-name">Chen Yuanhang</div>
+      <div class="tc-role">CEO &amp; Co-Founder</div>
+      <div class="tc-bio">Former Lead PM at Google X (Project Starline). Stanford CS PhD. Holds 12 AR/XR patents.</div>
+      <div class="tc-tags"><span class="tc-tag">Product</span><span class="tc-tag">XR</span><span class="tc-tag">Strategy</span></div>
     </div>
-
-    <!-- CTO -->
-    <div class="team-card">
-      <div class="team-avatar" style="background:linear-gradient(135deg,#00d4ff,#0099cc)">林</div>
-      <div class="team-name">林 志远</div>
-      <div class="team-role">CTO &amp; Co-Founder</div>
-      <div class="team-bio">前 Meta Reality Labs 首席工程师，MIT 计算机科学博士。主导构建了 Horizon Worlds 的底层渲染引擎，深度学习与分布式系统专家。</div>
-      <div class="team-tags">
-        <span class="team-tag">分布式系统</span>
-        <span class="team-tag">深度学习</span>
-        <span class="team-tag">基础设施</span>
-      </div>
+    <div class="tc">
+      <div class="tc-avatar" style="background:linear-gradient(135deg,#00bcd4,#0077a3)">LZ</div>
+      <div class="tc-name">Lin Zhiyuan</div>
+      <div class="tc-role">CTO &amp; Co-Founder</div>
+      <div class="tc-bio">Former Principal Engineer, Meta Reality Labs. MIT PhD. Led Horizon Worlds rendering engine architecture.</div>
+      <div class="tc-tags"><span class="tc-tag">Systems</span><span class="tc-tag">ML</span><span class="tc-tag">Infra</span></div>
     </div>
-
-    <!-- CPO -->
-    <div class="team-card">
-      <div class="team-avatar" style="background:linear-gradient(135deg,#ff6b9d,#c0392b)">张</div>
-      <div class="team-name">张 思远</div>
-      <div class="team-role">CPO</div>
-      <div class="team-bio">前字节跳动产品总监（飞书国际化负责人），负责飞书从 0 到 1 的海外市场产品体系建设，服务 500 强客户超 80 家。</div>
-      <div class="team-tags">
-        <span class="team-tag">企业协作</span>
-        <span class="team-tag">增长</span>
-        <span class="team-tag">国际化</span>
-      </div>
+    <div class="tc">
+      <div class="tc-avatar" style="background:linear-gradient(135deg,#f4436c,#c0392b)">ZS</div>
+      <div class="tc-name">Zhang Siyuan</div>
+      <div class="tc-role">CPO</div>
+      <div class="tc-bio">Former Product Director at ByteDance, led Lark's international expansion. 80+ Fortune 500 clients.</div>
+      <div class="tc-tags"><span class="tc-tag">SaaS</span><span class="tc-tag">Growth</span><span class="tc-tag">Globalization</span></div>
     </div>
-
-    <!-- CMO -->
-    <div class="team-card">
-      <div class="team-avatar" style="background:linear-gradient(135deg,#f7971e,#ffd200)">王</div>
-      <div class="team-name">王 晓蕾</div>
-      <div class="team-role">CMO</div>
-      <div class="team-bio">前 Zoom 亚太区营销负责人，擅长企业级 SaaS PLG 增长策略。主导 Zoom 亚太 ARR 从 $5M 增长至 $80M 的完整周期。</div>
-      <div class="team-tags">
-        <span class="team-tag">PLG 增长</span>
-        <span class="team-tag">企业销售</span>
-        <span class="team-tag">品牌</span>
-      </div>
+    <div class="tc">
+      <div class="tc-avatar" style="background:linear-gradient(135deg,#f7971e,#ffd200)">WX</div>
+      <div class="tc-name">Wang Xiaolei</div>
+      <div class="tc-role">CMO</div>
+      <div class="tc-bio">Former Zoom APAC Marketing Director. Grew APAC ARR from $5M to $80M through PLG strategy.</div>
+      <div class="tc-tags"><span class="tc-tag">PLG</span><span class="tc-tag">Brand</span><span class="tc-tag">B2B</span></div>
     </div>
-
-    <!-- VP Eng -->
-    <div class="team-card">
-      <div class="team-avatar" style="background:linear-gradient(135deg,#43e97b,#38f9d7)">李</div>
-      <div class="team-name">李 浩宇</div>
-      <div class="team-role">VP of Engineering</div>
-      <div class="team-bio">前 OpenAI 基础设施工程师，卡内基梅隆大学系统方向博士。参与 GPT-4 大规模训练基础设施的架构设计与优化。</div>
-      <div class="team-tags">
-        <span class="team-tag">系统架构</span>
-        <span class="team-tag">LLM</span>
-        <span class="team-tag">DevOps</span>
-      </div>
+    <div class="tc">
+      <div class="tc-avatar" style="background:linear-gradient(135deg,#43e97b,#1a9850)">LH</div>
+      <div class="tc-name">Li Haoyu</div>
+      <div class="tc-role">VP Engineering</div>
+      <div class="tc-bio">Former OpenAI infrastructure engineer, CMU Systems PhD. Co-designed GPT-4 training infrastructure.</div>
+      <div class="tc-tags"><span class="tc-tag">LLM</span><span class="tc-tag">MLOps</span><span class="tc-tag">DevOps</span></div>
     </div>
-
-    <!-- VP Design -->
-    <div class="team-card">
-      <div class="team-avatar" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb)">刘</div>
-      <div class="team-name">刘 雨欣</div>
-      <div class="team-role">VP of Design</div>
-      <div class="team-bio">前 Apple Human Interface Group 高级设计师，曾主导多项 visionOS 交互原型设计。将空间设计语言引入 B2B 协作产品领域。</div>
-      <div class="team-tags">
-        <span class="team-tag">空间设计</span>
-        <span class="team-tag">HCI</span>
-        <span class="team-tag">visionOS</span>
-      </div>
+    <div class="tc">
+      <div class="tc-avatar" style="background:linear-gradient(135deg,#a18cd1,#8e24aa)">LY</div>
+      <div class="tc-name">Liu Yuxin</div>
+      <div class="tc-role">VP Design</div>
+      <div class="tc-bio">Former Apple Human Interface Group. Pioneered visionOS interaction prototypes. Bridging spatial UX with B2B tools.</div>
+      <div class="tc-tags"><span class="tc-tag">Spatial UI</span><span class="tc-tag">HCI</span><span class="tc-tag">visionOS</span></div>
     </div>
-
-    <!-- CFO -->
-    <div class="team-card">
-      <div class="team-avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c)">赵</div>
-      <div class="team-name">赵 明轩</div>
-      <div class="team-role">CFO</div>
-      <div class="team-bio">前高盛科技投行 VP，参与 20+ 科技企业 IPO 与融资项目，拥有丰富的 SaaS 公司财务管理与资本市场经验。</div>
-      <div class="team-tags">
-        <span class="team-tag">资本运作</span>
-        <span class="team-tag">财务</span>
-        <span class="team-tag">IPO</span>
-      </div>
+    <div class="tc">
+      <div class="tc-avatar" style="background:linear-gradient(135deg,#f093fb,#e53935)">ZM</div>
+      <div class="tc-name">Zhao Mingxuan</div>
+      <div class="tc-role">CFO</div>
+      <div class="tc-bio">Former Goldman Sachs Tech IBD VP, 20+ tech IPOs. Expert in SaaS financial modeling and capital markets.</div>
+      <div class="tc-tags"><span class="tc-tag">Finance</span><span class="tc-tag">IPO</span><span class="tc-tag">M&amp;A</span></div>
     </div>
-
-    <!-- VP Sales -->
-    <div class="team-card">
-      <div class="team-avatar" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">孙</div>
-      <div class="team-name">孙 嘉豪</div>
-      <div class="team-role">VP of Sales</div>
-      <div class="team-bio">前 Salesforce 大客户销售总监，深耕 Fortune 500 企业级 SaaS 销售 10 年，单年 ARR 贡献峰值超 $12M。</div>
-      <div class="team-tags">
-        <span class="team-tag">企业销售</span>
-        <span class="team-tag">大客户</span>
-        <span class="team-tag">SaaS</span>
-      </div>
+    <div class="tc">
+      <div class="tc-avatar" style="background:linear-gradient(135deg,#4facfe,#1976d2)">SJ</div>
+      <div class="tc-name">Sun Jiahao</div>
+      <div class="tc-role">VP Sales</div>
+      <div class="tc-bio">Former Salesforce Enterprise Sales Director. 10+ years in Fortune 500 SaaS. Peak annual ARR contribution: $12M.</div>
+      <div class="tc-tags"><span class="tc-tag">Enterprise</span><span class="tc-tag">SaaS</span><span class="tc-tag">Accounts</span></div>
     </div>
   </div>
 
-  <!-- Advisors -->
-  <div class="advisors fade-in">
-    <h3>顾问团队 / Advisors</h3>
+  <div class="advisors-section fade-up">
+    <div class="advisors-label">Advisors</div>
     <div class="advisor-row">
-      <div class="advisor-card">
-        <div class="advisor-avatar" style="background:rgba(108,99,255,.2)">吴</div>
-        <div class="advisor-info">
-          <h4>吴 恩达</h4>
-          <p>AI 布道者 · Coursera 联合创始人 · 前百度 AI 首席科学家</p>
+      <div class="adv">
+        <div class="adv-avatar" style="background:linear-gradient(135deg,#6c63ff,#9b5de5)">AN</div>
+        <div>
+          <h4>Andrew Ng</h4>
+          <p>AI Pioneer · Coursera Co-founder · Former Baidu Chief AI Scientist</p>
         </div>
       </div>
-      <div class="advisor-card">
-        <div class="advisor-avatar" style="background:rgba(0,212,255,.15)">S</div>
-        <div class="advisor-info">
+      <div class="adv">
+        <div class="adv-avatar" style="background:linear-gradient(135deg,#00bcd4,#0077a3)">SK</div>
+        <div>
           <h4>Sriram Krishnan</h4>
-          <p>前 a16z 普通合伙人 · 前 Microsoft、Twitter VP</p>
+          <p>Former a16z General Partner · Ex-Microsoft &amp; Twitter VP</p>
         </div>
       </div>
-      <div class="advisor-card">
-        <div class="advisor-avatar" style="background:rgba(255,107,157,.15)">张</div>
-        <div class="advisor-info">
-          <h4>张 一鸣</h4>
-          <p>字节跳动创始人 · 战略顾问</p>
+      <div class="adv">
+        <div class="adv-avatar" style="background:linear-gradient(135deg,#f4436c,#c0392b)">JC</div>
+        <div>
+          <h4>Julia Chen</h4>
+          <p>Former CTO, Zoom · Board Member, Twilio · XR Computing Expert</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── CONTACT ─── -->
+<!-- CONTACT -->
 <section id="contact">
-  <div class="contact-grid">
-    <div class="contact-info fade-in">
-      <span class="section-label">Contact Us</span>
-      <h2>开启你的<br /><span style="background:linear-gradient(135deg,var(--secondary),var(--primary));-webkit-background-clip:text;-webkit-text-fill-color:transparent">无界协作</span><br />旅程</h2>
-      <p>无论是产品咨询、商务合作、融资对接还是加入我们，欢迎随时联系团队。我们通常在 24 小时内回复。</p>
-      <div class="contact-items">
-        <div class="contact-item">
-          <div class="contact-item-icon">✉️</div>
-          <div class="contact-item-text">
-            <h5>商务邮件</h5>
+  <div class="contact-wrap">
+    <div class="contact-info fade-up">
+      <div class="section-eyebrow">Contact Us</div>
+      <h2 class="section-h">Let's build the<br />future together.</h2>
+      <p class="section-p">Whether you're a potential customer, investor, partner, or future teammate — we'd love to hear from you. We respond within 24 hours.</p>
+      <div class="c-items">
+        <div class="c-item">
+          <div class="c-icon">✉️</div>
+          <div>
+            <h5>General Inquiries</h5>
             <p>hello@ourufo.org</p>
           </div>
         </div>
-        <div class="contact-item">
-          <div class="contact-item-icon">💼</div>
-          <div class="contact-item-text">
-            <h5>投资合作</h5>
+        <div class="c-item">
+          <div class="c-icon">💼</div>
+          <div>
+            <h5>Investment &amp; Partnerships</h5>
             <p>invest@ourufo.org</p>
           </div>
         </div>
-        <div class="contact-item">
-          <div class="contact-item-icon">🧑‍💻</div>
-          <div class="contact-item-text">
-            <h5>加入我们（招聘）</h5>
+        <div class="c-item">
+          <div class="c-icon">🧑‍💻</div>
+          <div>
+            <h5>Careers</h5>
             <p>careers@ourufo.org</p>
           </div>
         </div>
-        <div class="contact-item">
-          <div class="contact-item-icon">📍</div>
-          <div class="contact-item-text">
-            <h5>总部地址</h5>
-            <p>上海市徐汇区漕河泾开发区 · 旧金山 SoMa District</p>
+        <div class="c-item">
+          <div class="c-icon">📍</div>
+          <div>
+            <h5>US Headquarters</h5>
+            <p>349 Holden Road, Youngsville, NC 27596, United States</p>
+          </div>
+        </div>
+        <div class="c-item">
+          <div class="c-icon">🌏</div>
+          <div>
+            <h5>Asia Pacific Office</h5>
+            <p>Caohejing Hi-Tech Park, Xuhui, Shanghai, China</p>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="contact-form fade-in">
-      <h3>发送消息</h3>
-      <div class="form-row">
-        <div class="form-group">
-          <label>姓名 *</label>
-          <input type="text" placeholder="您的姓名" />
-        </div>
-        <div class="form-group">
-          <label>邮箱 *</label>
-          <input type="email" placeholder="your@email.com" />
-        </div>
+    <div class="contact-form-box fade-up">
+      <h3>Send a message</h3>
+      <div class="f-row">
+        <div class="f-group"><label>First Name *</label><input type="text" placeholder="Jane" /></div>
+        <div class="f-group"><label>Last Name *</label><input type="text" placeholder="Smith" /></div>
       </div>
-      <div class="form-group">
-        <label>公司 / 机构</label>
-        <input type="text" placeholder="所在公司或机构名称" />
-      </div>
-      <div class="form-group">
-        <label>合作类型</label>
+      <div class="f-group"><label>Email *</label><input type="email" placeholder="jane@company.com" /></div>
+      <div class="f-group"><label>Company</label><input type="text" placeholder="Your company or organization" /></div>
+      <div class="f-group">
+        <label>How can we help?</label>
         <select>
-          <option value="">请选择</option>
-          <option>产品咨询 / 内测申请</option>
-          <option>企业采购</option>
-          <option>投资合作</option>
-          <option>媒体采访</option>
-          <option>加入团队</option>
-          <option>其他</option>
+          <option value="">Select a topic</option>
+          <option>Product Demo / Early Access</option>
+          <option>Enterprise Pricing</option>
+          <option>Investment Inquiry</option>
+          <option>Press &amp; Media</option>
+          <option>Join the Team</option>
+          <option>Other</option>
         </select>
       </div>
-      <div class="form-group">
-        <label>留言内容 *</label>
-        <textarea placeholder="请告诉我们您的需求或问题..."></textarea>
-      </div>
-      <button class="form-submit">发送消息 →</button>
+      <div class="f-group"><label>Message *</label><textarea placeholder="Tell us more about what you're looking for..."></textarea></div>
+      <button class="f-submit">Send Message →</button>
     </div>
   </div>
 </section>
 
-<!-- ─── FOOTER ─── -->
+<!-- FOOTER -->
 <footer>
-  <div class="footer-grid">
-    <div class="footer-brand">
-      <span class="nav-logo">OurUFO</span>
-      <p>构建下一代 AI 空间协作平台，让全球分布式团队无界协作，重新定义人机协同的边界。</p>
-      <div class="footer-social">
-        <a href="#" class="social-btn">𝕏</a>
-        <a href="#" class="social-btn">in</a>
-        <a href="#" class="social-btn">GH</a>
-        <a href="#" class="social-btn">YT</a>
+  <div class="footer-top">
+    <div class="f-brand">
+      <a href="#" class="nav-logo">Our<span>UFO</span></a>
+      <p>Building the AI spatial collaboration platform that lets distributed teams work without borders.</p>
+      <div class="f-social">
+        <a href="#" class="f-soc">𝕏</a>
+        <a href="#" class="f-soc">in</a>
+        <a href="#" class="f-soc">GH</a>
+        <a href="#" class="f-soc">YT</a>
       </div>
     </div>
-    <div class="footer-col">
-      <h5>产品</h5>
+    <div class="f-col">
+      <h5>Product</h5>
       <ul>
         <li><a href="#product">UFO Room</a></li>
-        <li><a href="#product">OmniAI 助手</a></li>
+        <li><a href="#product">OmniAI Assistant</a></li>
         <li><a href="#product">FlowSync</a></li>
         <li><a href="#product">Presence Engine</a></li>
-        <li><a href="#contact">申请内测</a></li>
+        <li><a href="#contact">Request Early Access</a></li>
       </ul>
     </div>
-    <div class="footer-col">
-      <h5>公司</h5>
+    <div class="f-col">
+      <h5>Company</h5>
       <ul>
-        <li><a href="#about">关于我们</a></li>
-        <li><a href="#team">团队</a></li>
-        <li><a href="#funding">融资情况</a></li>
-        <li><a href="#contact">加入我们</a></li>
-        <li><a href="#">新闻室</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#team">Team</a></li>
+        <li><a href="#funding">Funding</a></li>
+        <li><a href="#contact">Careers</a></li>
+        <li><a href="#">Newsroom</a></li>
       </ul>
     </div>
-    <div class="footer-col">
-      <h5>资源</h5>
+    <div class="f-col">
+      <h5>Resources</h5>
       <ul>
-        <li><a href="#">开发者文档</a></li>
-        <li><a href="#">API 参考</a></li>
-        <li><a href="#">案例研究</a></li>
-        <li><a href="#">博客</a></li>
-        <li><a href="#">隐私政策</a></li>
+        <li><a href="#">Developer Docs</a></li>
+        <li><a href="#">API Reference</a></li>
+        <li><a href="#">Case Studies</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Privacy Policy</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
     <p>© 2024 OurUFO Inc. All rights reserved. · ourufo.org</p>
-    <p style="color:var(--text-muted)">Built with ✦ in Shanghai &amp; San Francisco</p>
+    <p>349 Holden Road, Youngsville, NC 27596, United States</p>
   </div>
 </footer>
 
-<!-- ─── JS ─── -->
 <script>
-  // Mobile menu toggle
   function toggleMenu() {
     document.getElementById('mobileMenu').classList.toggle('open');
   }
 
-  // Fade-in on scroll
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-  // Nav background on scroll
-  const nav = document.querySelector('nav');
+  // Scroll effects
+  const nav = document.getElementById('mainNav');
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-      nav.style.background = 'rgba(6,8,20,0.97)';
-    } else {
-      nav.style.background = 'rgba(6,8,20,0.82)';
-    }
+    nav.classList.toggle('scrolled', window.scrollY > 40);
   });
 
-  // Smooth active nav link highlight
+  // Fade-up on scroll
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+
+  // Active nav link
   const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-links a');
+  const links = document.querySelectorAll('.nav-links a');
   window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(s => {
-      if (window.scrollY >= s.offsetTop - 120) current = s.id;
-    });
-    navLinks.forEach(a => {
-      a.style.color = a.getAttribute('href') === `#${current}` ? 'var(--secondary)' : '';
+    let cur = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) cur = s.id; });
+    links.forEach(a => {
+      a.style.color = a.getAttribute('href') === `#${cur}` ? 'var(--accent)' : '';
     });
   });
 </script>
